@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-  <name>coplanar_finder</name>
+  <name>table_wiper</name>
   <version>0.0.0</version>
   <description>The coplanar_finder package</description>
 
