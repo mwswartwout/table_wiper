@@ -121,7 +121,7 @@ add_definitions(${EIGEN_DEFINITIONS})
 add_definitions(${PCL_DEFINITIONS})
 
 ## Declare a C++ library
-add_library(updated_pcl_utils src/updated_pcl_utils.cpp)
+add_library(further_updated_pcl_utils src/further_updated_pcl_utils.cpp)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -129,14 +129,14 @@ add_library(updated_pcl_utils src/updated_pcl_utils.cpp)
 # add_dependencies(coplanar_finder ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-add_executable(coplanar_finder src/coplanar_finder.cpp)
+add_executable(table_wiper src/table_wiper.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(coplanar_finder_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(coplanar_finder updated_pcl_utils ${catkin_LIBRARIES} ${PCL_LIBRARIES})
+target_link_libraries(table_wiper further_updated_pcl_utils ${catkin_LIBRARIES} ${PCL_LIBRARIES})
 
 #############
 ## Install ##

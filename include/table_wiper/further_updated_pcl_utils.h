@@ -4,8 +4,8 @@
 ///This class provides example functions using the Point Cloud Library to operate
 /// on point-cloud data
 
-#ifndef UPDATED_PCL_UTILS_H_
-#define UPDATED_PCL_UTILS_H_
+#ifndef FURTHER_UPDATED_PCL_UTILS_H_
+#define FURTHER_UPDATED_PCL_UTILS_H_
 
 #include<ros/ros.h> //generic C++ stuff
 #include <stdlib.h>
@@ -21,6 +21,7 @@
 #include <sensor_msgs/PointCloud2.h> //useful ROS message types
 #include <geometry_msgs/PointStamped.h>
 #include <geometry_msgs/TransformStamped.h>
+#include <geometry_msgs/PoseStamped.h>
 
 #include <cwru_msgs/PatchParams.h>
 
@@ -43,10 +44,10 @@ using namespace pcl;
 using namespace pcl::io;
 
 // define a class, including a constructor, member variables and member functions
-class UpdatedPclUtils
+class FurtherUpdatedPclUtils
 {
 public:
-    UpdatedPclUtils(ros::NodeHandle* nodehandle); //constructor
+    FurtherUpdatedPclUtils(ros::NodeHandle* nodehandle); //constructor
 
      // insert doxygen documentation of member fncs;  run "doxywizard" to create documentation
 
@@ -93,7 +94,7 @@ public:
     void get_gen_purpose_cloud(pcl::PointCloud<pcl::PointXYZ> & outputCloud );    
     void example_pcl_operation();
     void findCoplanarPoints();
-
+    void find_selected_centroid(geometry_msgs::PoseStamped& pose);
     Eigen::Vector3f get_centroid() { return centroid_; };
     Eigen::Vector3f get_major_axis() { return major_axis_; };
     

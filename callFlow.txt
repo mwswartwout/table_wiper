@@ -1,0 +1,9 @@
+table_wiper main
+ArmMotionCommander::rt_arm_plan_path_current_to_goal_pose(Pose);
+sends goal to action client cartMoveActionServer
+goal code = RT_ARM_PLAN_PATH_CURRENT_TO_GOAL_POSE, goal is pose
+action server is baxter_cart_moves_as
+runs rt_arm_plan_path_current_to_goal_pose()
+runs CartTrajPlanner::cartesian_path_planner
+
+
