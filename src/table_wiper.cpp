@@ -343,58 +343,7 @@ int main(int argc, char** argv) {
     Eigen::Vector3d dp_displacement;
     int rtn_val;
     geometry_msgs::PoseStamped rt_tool_pose;
-   /* 
-    arm_motion_commander.send_test_goal(); // send a test command
     
-    //send a command to plan a joint-space move to pre-defined pose:
-    rtn_val=arm_motion_commander.plan_move_to_pre_pose();
-    
-    //send command to execute planned motion
-    rtn_val=arm_motion_commander.rt_arm_execute_planned_path();
-    
-    //inquire re/ right-arm joint angles:
-    rtn_val=arm_motion_commander.rt_arm_request_q_data();
-    
-    //inquire re/ right-arm tool pose w/rt torso:    
-    rtn_val=arm_motion_commander.rt_arm_request_tool_pose_wrt_torso();
-    
-    //do a joint-space move; get the start angles:
-    right_arm_joint_angles = arm_motion_commander.get_right_arm_joint_angles();
-    
-    //increment all of the joint angles by 0.1:
-    for (int i=0;i<7;i++) right_arm_joint_angles[i]+=0.2;
-    
-    //try planning a joint-space motion to this new joint-space pose:
-    rtn_val=arm_motion_commander.rt_arm_plan_jspace_path_current_to_qgoal(right_arm_joint_angles);
-
-    //send command to execute planned motion
-    rtn_val=arm_motion_commander.rt_arm_execute_planned_path();   
-    
-    //let's see where we ended up...should match goal request
-    rtn_val=arm_motion_commander.rt_arm_request_q_data();
-    
-    //return to pre-defined pose:
-    rtn_val=arm_motion_commander.plan_move_to_pre_pose();
-    rtn_val=arm_motion_commander.rt_arm_execute_planned_path();    
-
-    //get tool pose
-    rtn_val = arm_motion_commander.rt_arm_request_tool_pose_wrt_torso();
-    rt_tool_pose = arm_motion_commander.get_rt_tool_pose_stamped();
-    //alter the tool pose:
-    rt_tool_pose.pose.position.z -= 0.2; // descend 20cm, along z in torso frame
-    // send move plan request:
-    rtn_val=arm_motion_commander.rt_arm_plan_path_current_to_goal_pose(rt_tool_pose);
-    //send command to execute planned motion
-    rtn_val=arm_motion_commander.rt_arm_execute_planned_path();
-    
-    //try vector cartesian displacement at fixed orientation:
-    dp_displacement<<0,0,-0.25;
-    rtn_val = arm_motion_commander.rt_arm_plan_path_current_to_goal_dp_xyz(dp_displacement);
-    if (rtn_val == cwru_action::cwru_baxter_cart_moveResult::SUCCESS)  { 
-            //send command to execute planned motion
-           rtn_val=arm_motion_commander.rt_arm_execute_planned_path();
-    }
-   */ 
     FurtherUpdatedPclUtils cwru_pcl_utils(&nh);
     while (!cwru_pcl_utils.got_kinect_cloud())
     {
@@ -440,26 +389,34 @@ int main(int argc, char** argv) {
         ROS_INFO("Waiting for selected points");
         if (cwru_pcl_utils.got_selected_points())
         {
-            /*geometry_msgs::PoseStamped Pose;
-            ROS_INFO("transforming selected points");
-            cwru_pcl_utils.transform_selected_points_cloud(A_sensor_wrt_torso);
-            ROS_INFO("Finding centroid of selected points...");
-            cwru_pcl_utils.find_selected_centroid(Pose);
-            ROS_INFO("Found centroid, now moving to position...");
-            rtn_val=arm_motion_commander.rt_arm_plan_path_current_to_goal_pose(Pose);
-            //send command to execute planned motion
-            rtn_val=arm_motion_commander.rt_arm_execute_planned_path();
-            */
             //get tool pose
             cwru_pcl_utils.transform_selected_points_cloud(A_sensor_wrt_torso);
             rtn_val = arm_motion_commander.rt_arm_request_tool_pose_wrt_torso();
             rt_tool_pose = arm_motion_commander.get_rt_tool_pose_stamped();
             //alter the tool pose:
             cwru_pcl_utils.find_selected_centroid(rt_tool_pose);
+            ROS_INFO("Returned centroid is at (%f, %f, %f)",
+                     rt_tool_pose.pose.position.x, rt_tool_pose.pose.position.y, rt_tool_pose.pose.position.z);
+            // Set z frame to table height, for some reason this doesn't line up as it should?
+            rt_tool_pose.pose.position.z -= .08;
             // send move plan request:
+            ROS_INFO("Changed z value to %f", rt_tool_pose.pose.position.z);
             rtn_val=arm_motion_commander.rt_arm_plan_path_current_to_goal_pose(rt_tool_pose);
             //send command to execute planned motion
             rtn_val=arm_motion_commander.rt_arm_execute_planned_path();
+            rtn_val = arm_motion_commander.rt_arm_request_tool_pose_wrt_torso();
+
+            // Do wiping motion
+            rt_tool_pose.pose.position.y -= .2;
+            rtn_val=arm_motion_commander.rt_arm_plan_path_current_to_goal_pose(rt_tool_pose);
+            //send command to execute planned motion
+            rtn_val=arm_motion_commander.rt_arm_execute_planned_path();
+
+            rt_tool_pose.pose.position.y += .4;
+            rtn_val=arm_motion_commander.rt_arm_plan_path_current_to_goal_pose(rt_tool_pose);
+            //send command to execute planned motion
+            rtn_val=arm_motion_commander.rt_arm_execute_planned_path();
+
             cwru_pcl_utils.reset_got_selected_points();
         }
         ros::Duration(1).sleep();

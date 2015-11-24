@@ -341,6 +341,11 @@ void FurtherUpdatedPclUtils::findCoplanarPoints() {
     //ROS_INFO("Finish cloud copying");
 } 
 
+/**
+ * @brief Finds the centroid of a selected patch of points
+ *
+ * @param Pose A pose to have the centroid coordinates stored in
+ */
 void FurtherUpdatedPclUtils::find_selected_centroid(geometry_msgs::PoseStamped& Pose)
 {
 
@@ -354,8 +359,10 @@ void FurtherUpdatedPclUtils::find_selected_centroid(geometry_msgs::PoseStamped& 
 
         ROS_INFO("Calculated centroid at (%f, %f, %f)", centroid(0), centroid(1), centroid(2));
     }
-
-    ROS_WARN("No points selected, could not calculate centroid, returned pose unchanged");
+    else
+    {
+        ROS_WARN("No points selected, could not calculate centroid, returned pose unchanged");
+    }
 }
 //generic function to copy an input cloud to an output cloud
 // provide pointers to the two clouds
